@@ -44,7 +44,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.$store.getters.IndexChildGoods);
+    // console.log(this.$store.getters.IndexChildGoods);
   },
 };
 </script>

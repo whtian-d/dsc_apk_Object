@@ -182,7 +182,7 @@ export default {
     padding: 0 1.1rem;
     background-color: #fff;
     .goodstitle {
-      padding-bottom: 1.1rem;
+      margin-bottom: 1.1rem;
       font-size: 1.5rem;
       overflow: hidden;
       line-height: 1.5;

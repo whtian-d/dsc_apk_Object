@@ -13,9 +13,14 @@
       </div>
     </div>
 
-    <div class="infinite-list-wrapper" style="height: 1700px">
+    <div class="infinite-list-wrapper">
       <ul class="list">
-        <li v-for="(key, index) in datalist" :key="index" class="list-item">
+        <li
+          v-for="(key, index) in datalist"
+          :key="index"
+          class="list-item"
+          @click="goodsdetaliFn(key)"
+        >
           <div class="imgbox">
             <img :src="key.goods_img" alt="" />
           </div>
@@ -39,6 +44,7 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import ajax from "@/api/ajax";
+import { Indicator } from "mint-ui";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
@@ -46,7 +52,7 @@ export default {
     //这里存放数据
     return {
       datalist: [],
-      loading: false,
+      loading: true,
       activeindex: 0,
       titledata: [
         {
@@ -77,8 +83,9 @@ export default {
   //方法集合
   methods: {
     load() {
-      if (!this.loading) {
-        this.loading = true;
+      if (this.loading) {
+        this.loading = false;
+        Indicator.open("加载中...");
         ajax("/api/goods/type_list", {
           page: this.page,
           size: 10,
@@ -90,8 +97,12 @@ export default {
             this.datalist = res.data;
           }
           this.page++;
-          this.loading = false;
-          console.log(this.page);
+          this.loading = true;
+          Indicator.close();
+          if (res.data.length == 0) {
+            this.loading = false;
+            this.noMore = true;
+          }
         });
       }
       // /api/goods/type_list?page=3&size=10&type=is_best
@@ -99,11 +110,16 @@ export default {
     changetab(index) {
       this.activeindex = index;
     },
+    goodsdetaliFn(data) {
+      this.$router.push("/goodsDetailspage/" + data.goods_id);
+    },
     fn() {
-      var apphtight = document.getElementById("app").offsetHeight;
-      console.log(window.pageYOffset + window.screen.height + 20);
-      console.log(apphtight);
-      if (window.pageYOffset + window.screen.height + 20 > apphtight) {
+      // console.log(window.pageYOffset + window.screen.height + 20);
+      // console.log(document.getElementById("app").offsetHeight);
+      if (
+        window.pageYOffset + window.screen.height + 20 >
+        document.getElementById("app").offsetHeight
+      ) {
         this.load();
       }
     },
